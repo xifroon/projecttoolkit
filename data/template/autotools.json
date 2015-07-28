@@ -1,0 +1,55 @@
+{
+    "inherit": "common",
+    "shortname": "autotools",
+    "_comment": "Version of common matched standard-guidelines' version",
+    "version": "0.0.1",
+    "name": "GNU Autotools Foreign project",
+    "description": "Autotools build system-enabled project with foreign strictness",
+    "files": "autotools/",
+    "content": {
+        "doc": {
+            "type": 0,
+            "_TODO": "Avoid accidentally skipping (not filling) empty file",
+            "content": {
+                "Makefile.am.empty": {
+                    "type": 2
+                }
+            }
+        },
+        "data": {
+            "type": 0,
+            "content": {
+                "Makefile.am.empty": {
+                    "type": 2
+                }
+            }
+        },
+        "po": {
+            "type": 0,
+            "_comment": "Gettext is integrated with autotools these day",
+            "content": {
+                "Makefile.am.empty": {
+                    "type": 2
+                }
+            }
+        },
+        "src": {
+            "type": 0,
+            "content": {
+                "Makefile.am.empty": {
+                    "type": 2
+                }
+            }
+        },
+        "LICENSE": {
+            "type": 1,
+            "link": "doc/LICENSE"
+        },
+        "configure.ac": {
+            "type": 3
+        },
+        "Makefile.am": {
+            "type": 3
+        }
+    }
+}

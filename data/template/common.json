@@ -1,0 +1,40 @@
+{
+    "shortname": "gtk",
+    "name": "Gtk+ v2 and v3 Project",
+    "description": "Xifroon compatible Gtk+ project structure",
+    "files": "gtk/",
+    "content": {
+        "doc": {
+            "type": 0,
+            "content": {
+                "wiki": {
+                    "type": 0,
+                    "content": {
+                        "install.md": {
+                            "type": 3
+                        },
+                        "contributing.md": {
+                            "type": 3
+                        }
+                    }
+                },
+                "CONTRIBUTOR.md": {
+                    "type": 3
+                },
+                "LICENSE": {
+                    "type": 3,
+                    "variant": "apache-common-license"
+                }
+            }
+        },
+        "TODO.md": {
+            "type": 3
+        },
+        "CHANGELOG.md": {
+            "type": 3
+        },
+        "README.md": {
+            "type": 3
+        }
+    }
+}

@@ -1,0 +1,239 @@
+#!/usr/bin/env python3
+VERSION = '@VERSION@'
+PACKAGE = '@PACKAGE@'
+PACKAGE_NAME = '@PACKAGE_NAME@'
+DATA_DIR = '@datarootdir@'
+TEMPLATE_DIR = '@datarootdir@/@PACKAGE@/template'
+
+import sys
+import os
+import os.path as path
+import argparse
+import shutil
+
+from string import Template
+
+import logging
+
+from projecttoolkit.filecreator import FileCreator as fcreator
+from projecttoolkit.filecreator import FileCreatorHint
+from projecttoolkit.template.specparser import SpecParser
+
+LOGFORMAT = '%(asctime)1s [%(levelname)-5s] on %(funcName)s: %(message)s'
+
+# Command Line Argument:
+# project new NAME [--type= | -t TYPE]
+#
+# Text
+description = 'Generate project folder structure and metaproject file.'
+
+class ProjectGenerator:
+    Type = {
+        # project shortname : subfolder
+        'common': 'common'
+    }
+
+    target_dir = ''
+    project = {
+        'name': 'xifroon',
+        'longname': 'X0 Project Longname',
+        'type': '',
+        'mail': 'abdullah@example.com',
+        'maintainer': 'Abdullah'
+    }
+
+    template = {
+        'name': 'common'
+    }
+
+    def __init__(self, name, ptype='common', target_dir='', opt_info={}):
+        self.Logger = logging.getLogger('projecttoolkit')
+
+        self.project['name'] = name
+        self.enumerate_supported_type()
+        self.project['type'] = ptype
+        if target_dir == '':
+            target_dir = os.getcwd()
+        self.target_dir = path.join(target_dir, name)
+        self.update_project_info(opt_info)
+
+    def update_project_info(self, project_info):
+        if isinstance(project_info, dict):
+            # Remove empty info
+            toremove = []
+            for key, val in project_info.items():
+                if val == None or val == '':
+                    toremove.append(key)
+            for key in toremove:
+                del project_info[key]
+            self.project.update(project_info)
+
+    def enumerate_supported_type(self):
+        # Identify supported template
+        for fi in os.listdir(TEMPLATE_DIR): # fi is filename only
+            # Find json file
+            fullpath = path.join(TEMPLATE_DIR, fi)
+            fi, fiext = path.splitext(fi)
+            if path.isfile(fullpath) and fiext == '.json':
+                self.Type.update({fi : fi})
+
+    def construct(self):
+        # Create target directory
+        if not path.exists(self.target_dir):
+            os.makedirs(self.target_dir, 0o750)
+        # Transform to substitute dictionary
+        substdict = dict(self.project)
+        # FIXME: Using stable iterator of other possibly unsync data.
+        #        When self.project changes, substdict may not change.
+        for key in iter(self.project.keys()):
+            substdict['project_' + key] = substdict.pop(key)
+
+        self.parser = SpecParser(self.project['type'], self.createfile_hinted, substdict)
+
+    # FIXME: Too long, refactor me
+    def process_template(self, template_cloned_path):
+        mode = 'r+'
+        fi = open(template_cloned_path, mode)
+        try:
+            # We guarantee no files bigger than computer RAM, at least now
+            content = fi.read()
+            template = Template(content)
+            # Add current file metadata
+            remaining, self.susbstdict['file_name'] = path.split(template_cloned_path)
+            remaining, self.susbstdict['file_ext'] = path.splitext(template_cloned_path)
+            remaining, self.susbstdict['file_parentname'] = path.split(self.susbstdict['file_name'])
+            # Overwrite
+            content = template.safe_substitute(self.substdict)
+            fi.seek(0)
+            fi.truncate()
+            fi.write(content)
+            fi.close()
+        except:
+            self.Logger.warning('Fail on read till close of ' + template_cloned_path)
+            None
+
+    def copy_with_postprocess(self, src, dest):
+        """Copy file then processing it"""
+        shutil.copy2(src, dest)
+        # Post process
+        self.process_template(dest)
+
+    def transfer_stock_dir(self, ptype, stockpath):
+        """Copy folder recursively from stock directory into target_dir
+
+        Arguments:
+        ptype -- type of template to determine subfolder
+        stockpath -- template path resemble structure specified in Xifroon standard
+        """
+        if not ptype in self.Type:
+            ptype = self.Type['common']
+        dest = path.join(self.target_dir, stockpath)
+        src = path.join(TEMPLATE_DIR, ptype, stockpath)
+        self.Logger.debug("Pick stockfolder from " + src + " to " + dest)
+        fcreator.lazycopy(src, dest, self.copy_with_postprocess)
+
+    def transfer_stock_file(self, ptype, stockpath):
+        """Copy file from stock directory into target_dir, processing it as necessary
+
+        Arguments:
+        ptype -- type of template to determine subfolder
+        stockpath -- template path resemble structure specified in Xifroon standard
+        """
+        if not ptype in self.Type:
+            ptype = self.Type['common']
+        dest = path.join(self.target_dir, stockpath)
+        src = path.join(TEMPLATE_DIR, ptype, stockpath)
+        self.Logger.debug("Pick stockfile from " + src + " to " + dest)
+        if path.isfile(src):
+            fcreator.lazycopy(src, dest, self.copy_with_postprocess)
+        else:
+            self.Logger.warning('Stock file %s not found thus not copied.' % (src))
+
+    def createfile_hinted(self, filepath, filecreatorhint, project_type=''):
+        # Verify project_type validity
+        if not project_type in self.Type:
+            project_type = self.project['type']
+        self.Logger.debug('Filepath: ' + filepath)
+        typehint = filecreatorhint['type']
+        fullfilepath = path.join(self.target_dir, filepath)
+
+        if typehint == FileCreatorHint.Folder:
+            fcreator.createfolder(fullfilepath, 0o750)
+        elif typehint == FileCreatorHint.SymLink:
+            targetpath = path.join(self.target_dir, filecreatorhint['link'])
+            symlinkpath = fullfilepath
+            fcreator.createsymlink(targetpath, symlinkpath)
+        elif typehint == FileCreatorHint.NewFile:
+            fullfilepath = path.join(self.target_dir, filepath)
+            fcreator.createfile(fullfilepath)
+        elif typehint == FileCreatorHint.StockFile:
+            self.transfer_stock_file(project_type, filepath)
+        elif typehint == FileCreatorHint.AltStockFile:
+            # TODO
+            None
+
+def main():
+    parser = argparse.ArgumentParser(prog='project new')
+    parser.add_argument('name', metavar='NAME', help='short lowercase (tar) name of new project');
+    parser.add_argument('-n', '--longname', metavar='LONG_NAME', required=False,
+                        help='long obvious name of new project');
+    parser.add_argument('-a', '--repository', metavar='REPO_ADDR', required=False,
+                        help='cloud storage address of the new project');
+    parser.add_argument('-d', '--description', metavar='DESC', required=False,
+                        help='description of the new project');
+    # TODO: List template interface
+    parser.add_argument('-t', '--type',
+                        help='supported project type')
+    parser.add_argument('-o', '--target', required=False,
+                        help='directory where the structure created')
+    parser.add_argument('-v', '--verbose', required=False, action='count',
+                        help='how much log information produced: error, warning, info.')
+
+    args = parser.parse_args()
+
+    pg = ProjectGenerator(args.name)
+
+    # Handle argument anomaly
+    if args.verbose != None:
+        args.verbose = abs(args.verbose) + 1
+        args.verbose = 50 - (min(args.verbose, 5) * 10)
+    else:
+        args.verbose = 40
+    print(args)
+
+    logging.basicConfig(format=LOGFORMAT, level=args.verbose)
+    Logger = logging.getLogger('projecttoolkit')
+
+    Logger.debug(str(args));
+
+    if args.target == None:
+        args.target = path.join(os.getcwd(), args.name)
+    else:
+        args.target = path.normpath(args.target)
+
+    if args.type in pg.Type:
+        args.type = pg.Type[args.type]
+    else:
+        Logger.warning('Project type unspecified or unsupported.')
+        Logger.warning('Using general purpose project generator.')
+        args.type = pg.Type['common']
+    Logger.debug(str(args))
+
+    # Optional project info packaging
+    project_info = {
+        'name': args.name,
+        'tarname': args.name,
+        'longname': args.longname,
+        'type': args.type,
+        'repoaddr': args.repository,
+        'description': args.description
+    }
+    # Setting up properties
+    pg.target_dir = args.target
+    pg.update_project_info(project_info)
+    # Construct project
+    pg.construct()
+    print('Construction of %s complete!' % (args.name))
+
+if __name__ == "__main__":
+    main()

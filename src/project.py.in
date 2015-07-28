@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+import sys
+import os
+
+# Text
+HELP_TEXT = \
+"""Copyright (c) 2015 Xifroon Lab.
+%s - Small script for managing project compliant
+with our guideline.
+
+%s [command] [[command-arg][option]]
+
+command available:
+  new [option] NAME
+    Generate new project structure
+
+  check [option]
+    Check project for compliant fullfilment
+
+  rename [option] OLD NEW
+    Rename generated project, case-insensitive
+
+option available:
+  -v, --version   show version of this script
+
+For more help refer to individual command help (-h or --help).
+""" % ('@PACKAGE_NAME@', sys.argv[0])
+
+class Application:
+    def run(self, argv):
+        if sys.argv[1] in ('new', 'check', 'rename'):
+            opts = ''
+            i = 0
+            for str in sys.argv:
+                if i > 1:
+                    opts = opts + ' ' + str
+                i = i + 1
+
+            cmd = sys.argv[0] + '-' + sys.argv[1] + ' ' + opts
+            os.system(cmd)
+
+        if sys.argv[1] in ('-v', '--version'):
+            print(self.VERSION)
+
+        if sys.argv[1] in ('-h', '--help'):
+            self.help()
+
+    def help(self):
+        print(HELP_TEXT)
+
+if __name__ == '__main__':
+    app = Application()
+    app.NAME = '@PACKAGE@'
+    app.VERSION = '@VERSION@'
+    app.DATA_DIR = '@datadir@'
+    app.run(sys.argv)

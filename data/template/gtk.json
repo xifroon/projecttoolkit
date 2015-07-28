@@ -1,0 +1,93 @@
+{
+    "inherit": "autotool",
+    "shortname": "gtk",
+    "name": "Gtk+ v2 and v3 Project",
+    "description": "Xifroon compatible Gtk+ project structure",
+    "files": "gtk/",
+    "content": {
+        "doc": {
+            "type": 2,
+            "content": {
+                "Makefile.am": {
+                    "type": 0
+                }
+            }
+        },
+        "pixmaps": {
+            "type": 0,
+            "content": {
+                "icons": {
+                    "type": 0,
+                    "content": {
+                        "icons": {
+                            "type": 0,
+                            "content": {
+                                "16x16": {
+                                    "type": 0,
+                                    "Makefile.am": {
+                                        "type": 3
+                                    }
+                                },
+                                "24x24": {
+                                    "type": 0,
+                                    "Makefile.am": {
+                                        "type": 3
+                                    }
+                                },
+                                "32x32": {
+                                    "type": 0,
+                                    "Makefile.am": {
+                                        "type": 3
+                                    }
+                                },
+                                "64x64": {
+                                    "type": 0,
+                                    "Makefile.am": {
+                                        "type": 3
+                                    }
+                                },
+                                "128x128": {
+                                    "type": 0,
+                                    "Makefile.am": {
+                                        "type": 3
+                                    }
+                                },
+                                "Makefile.am": {
+                                    "type": 3
+                                }
+                            }
+                        },
+                        "Makefile.am": {
+                            "type": 3
+                        }
+                    }
+                },
+                "Makefile.am": {
+                    "type": 3
+                }
+            }
+        },
+        "src": {
+            "type": 2,
+            "content": {
+                "Makefile.am": {
+                    "type": 0
+                }
+            }
+        },
+        "data": {
+            "type": 2,
+            "content": {
+                "Makefile.am": {
+                    "type": 0
+                }
+            }
+        },
+        "configure.ac": {
+            "type": 3
+        },
+        "Makefile.am": {
+            "type": 3
+        }
+    }
+}
