@@ -2,8 +2,8 @@
 VERSION = '@ProjectToolkit_VERSION@'
 PACKAGE = '@PACKAGE_SHORTNAME@'
 PACKAGE_NAME = '@PACKAGE_NAME@'
-DATA_DIR = '@datarootdir@'
-TEMPLATE_DIR = '@datarootdir@/@PACKAGE@/template'
+PACKAGE_DATA_DIR = '@PACKAGE_DATA_DIR@'
+TEMPLATE_DIR = '@PACKAGE_DATA_DIR@/template'
 
 import sys
 import os
