@@ -9,16 +9,16 @@ setup(
     author = "Hernawan Fa'iz Abdillah",
     author_email = "hernawan.faiz.a@mail.ugm.ac.id",
     description = "Project management toolkit created and used by Xifroon Lab.",
-    license = "Apache Common License v2.0",
+    license = "${ProjectToolkit_LICENSE}",
     keywords = "project management toolkit Xifroon",
     url = "http://github.com/Xifroon/projecttoolkit",
     packages = ['projecttoolkit', 'projecttoolkit.template'],
 	package_dir = {
         "": "${CMAKE_CURRENT_SOURCE_DIR}"
     },
-    classifiers=[
+    classifiers = [
         "Development Status :: 1 - Alpha",
         "Topic :: Utilities",
-        "License :: OSI Approved :: Apache License",
+        "License :: OSI Approved :: ${ProjectToolkit_LICENSE}",
     ],
 )

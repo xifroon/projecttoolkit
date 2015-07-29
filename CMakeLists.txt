@@ -4,6 +4,9 @@ set (PACKAGE_NAME "Project Toolkit")
 set (PACKAGE_LONGNAME "X0 Project Toolkit")
 set (PACKAGE_SHORTNAME "projecttoolkit")
 
+# License
+set (ProjectToolkit_LICENSE "GNU General Public License v3.0")
+
 # Version
 set (ProjectToolkit_VERSION_MAJOR 0)
 set (ProjectToolkit_VERSION_MINOR 1)

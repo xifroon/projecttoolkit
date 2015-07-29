@@ -99,6 +99,6 @@ Contact
 
 License
 -------
-Apache Common License v2.0
+GNU General Public License v3.0
 
 [Contributing to X0 Projext]: (https://github.com/Xifroon/standard-guidelines/guideline/contributing.md)
