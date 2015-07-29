@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-VERSION = '@VERSION@'
-PACKAGE = '@PACKAGE@'
+VERSION = '@ProjectToolkit_VERSION@'
+PACKAGE = '@PACKAGE_SHORTNAME@'
 PACKAGE_NAME = '@PACKAGE_NAME@'
 DATA_DIR = '@datarootdir@'
 TEMPLATE_DIR = '@datarootdir@/@PACKAGE@/template'
@@ -47,7 +47,7 @@ class ProjectGenerator:
     }
 
     def __init__(self, name, ptype='common', target_dir='', opt_info={}):
-        self.Logger = logging.getLogger('projecttoolkit')
+        self.Logger = logging.getLogger(PACKAGE)
 
         self.project['name'] = name
         self.enumerate_supported_type()
