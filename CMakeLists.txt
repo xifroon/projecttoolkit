@@ -1,15 +1,18 @@
 cmake_minimum_required (VERSION 2.6)
 project (ProjectToolkit)
 set (PACKAGE_NAME "Project Toolkit")
-set (PACKAGE_TAR_NAME "projecttoolkit")
+set (PACKAGE_LONGNAME "X0 Project Toolkit")
+set (PACKAGE_SHORTNAME "projecttoolkit")
 
 # Version
 set (ProjectToolkit_VERSION_MAJOR 0)
-set (ProjectToolkit_VERSION_MINOR 3)
+set (ProjectToolkit_VERSION_MINOR 1)
 set (ProjectToolkit_VERSION_PATCH 0)
-set (ProjectToolkit_VERSION_TWEAK "alpha.1")
-set (ProjectToolkit_XIFROON_VERSION
-     "${ProjectToolkit_VERSION_MAJOR}.${ProjectToolkit_VERSION_MINOR}.${ProjectToolkit_VERSION_PATCH}-${ProjectToolkit_VERSION_TWEAK}")
+set (ProjectToolkit_VERSION_TWEAK "alpha.9")
+set (ProjectToolkit_VERSION_CORE
+     "${ProjectToolkit_VERSION_MAJOR}.${ProjectToolkit_VERSION_MINOR}.${ProjectToolkit_VERSION_PATCH}")
+set (ProjectToolkit_VERSION
+"${ProjectToolkit_VERSION_CORE}-${ProjectToolkit_VERSION_TWEAK}")
 
 add_subdirectory (data)
 add_subdirectory (python)
