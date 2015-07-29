@@ -174,13 +174,13 @@ class ProjectGenerator:
 
 def main():
     parser = argparse.ArgumentParser(prog='project new')
-    parser.add_argument('name', metavar='NAME', help='short lowercase (tar) name of new project');
+    parser.add_argument('name', metavar='NAME', help='short lowercase (tar) name of new project')
     parser.add_argument('-n', '--longname', metavar='LONG_NAME', required=False,
-                        help='long obvious name of new project');
+                        help='long obvious name of new project')
     parser.add_argument('-a', '--repository', metavar='REPO_ADDR', required=False,
-                        help='cloud storage address of the new project');
+                        help='cloud storage address of the new project')
     parser.add_argument('-d', '--description', metavar='DESC', required=False,
-                        help='description of the new project');
+                        help='description of the new project')
     # TODO: List template interface
     parser.add_argument('-t', '--type',
                         help='supported project type')
@@ -204,7 +204,7 @@ def main():
     logging.basicConfig(format=LOGFORMAT, level=args.verbose)
     Logger = logging.getLogger('projecttoolkit')
 
-    Logger.debug(str(args));
+    Logger.debug(str(args))
 
     if args.target == None:
         args.target = path.join(os.getcwd(), args.name)

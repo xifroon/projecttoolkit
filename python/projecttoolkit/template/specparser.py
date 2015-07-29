@@ -56,7 +56,7 @@ class SpecParser:
                 newdepthpath = path.join(depthpath, filename)
                 self.parse_content(description['content'], newdepthpath)
 
-    def __validate_format(self, specification):
+    def _validate_format(self, specification):
         """Validating specification format"""
         if not 'content' in specification:
             self.Logger.warning('Spec. is invalid: no content field specified.')
@@ -67,7 +67,7 @@ class SpecParser:
         # Valid
         return 0
 
-    def __load_json_safe(specfd):
+    def _load_json_safe(specfd):
         try:
             self.Logger.debug('Load json: ' + specfd.abspath)
             self.specification = json.load(specfd)
@@ -80,9 +80,9 @@ class SpecParser:
         # Open json file
         specpath = path.join(self.specpath)
         specfd = open(project_spec_path, 'r')
-        if __load_json_safe(specfd):
+        if _load_json_safe(specfd):
             return
-        if __validate_format(project_spec):
+        if _validate_format(project_spec):
             return
         if 'inherit' in self.specification:
             self.Logger.debug('Parent type is ' + self.specification['inherit'])
